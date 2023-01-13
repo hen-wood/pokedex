@@ -93,7 +93,6 @@ const pokemonReducer = (state = initialState, action) => {
 				types: action.types
 			};
 		case ADD_ONE:
-			console.log(action);
 			if (!state[action.pokemon.id]) {
 				const newState = {
 					...state,
