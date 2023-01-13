@@ -25,7 +25,7 @@ const ItemForm = ({ itemId, hideForm }) => {
 			price
 		};
 
-		let returnedItem = dispatch(editPokemonItem(payload));
+		let returnedItem = await dispatch(editPokemonItem(payload));
 		if (returnedItem) {
 			hideForm();
 		}

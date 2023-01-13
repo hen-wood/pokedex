@@ -31,34 +31,10 @@ export const getPokemonItems = pokemonId => async dispatch => {
 	if (response.ok) {
 		const items = await response.json();
 		dispatch(load(items, pokemonId));
+		return items;
 	}
 };
 
-/*
-Edit an Item: PUT /api/items/:id
-This route updates the item matching the id in the route parameter.
-
-The payload that you must send looks like this:
-
-{
-  "id": 1,
-  "happiness": 86,
-  "imageUrl": "/images/pokemon_potion.svg",
-  "name": "Awesome Plastic Pizza",
-  "price": 27,
-  "pokemonId": 1
-}
-Successful response is the updated item returned, which looks like this:
-
-{
-  "id": 1,
-  "happiness": 86,
-  "imageUrl": "/images/pokemon_potion.svg",
-  "name": "Awesome Plastic Pizza",
-  "price": 27,
-  "pokemonId": 1
-}
-*/
 export const editPokemonItem = item => async dispatch => {
 	const res = await fetch(`/api/items/${item.id}`, {
 		method: "PUT",
@@ -70,6 +46,19 @@ export const editPokemonItem = item => async dispatch => {
 	if (res.ok) {
 		const item = await res.json();
 		dispatch(update(item));
+		return item;
+	}
+};
+
+export const deletePokemonItem = (itemId, pokemonId) => async dispatch => {
+	const res = await fetch(`/api/items/${itemId}`, {
+		method: "DELETE"
+	});
+
+	if (res.ok) {
+		const deletedItem = await res.json();
+		dispatch(remove(itemId, pokemonId));
+		return deletedItem;
 	}
 };
 
