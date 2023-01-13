@@ -59,6 +59,9 @@ export const postNewPokemon = newPokemon => async dispatch => {
 		const newPokemon = await res.json();
 		dispatch(addOnePokemon(newPokemon));
 		return newPokemon;
+	} else {
+		const errObj = await res.json();
+		return errObj;
 	}
 };
 
@@ -75,6 +78,8 @@ export const editPokemon = editPokemon => async dispatch => {
 		const editPokemon = await res.json();
 		dispatch(addOnePokemon(editPokemon));
 		return editPokemon;
+	} else {
+		console.log(res);
 	}
 };
 

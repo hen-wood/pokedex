@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { getPokemonTypes, postNewPokemon } from "../store/pokemon";
-const CreatePokemonForm = ({ hideForm }) => {
+import ErrorMessage from "./ErrorMessage";
+const CreatePokemonForm = ({ hideForm, pokemon }) => {
 	const pokeTypes = useSelector(state => state.pokemon.types);
 	const dispatch = useDispatch();
 	const history = useHistory();
@@ -23,6 +24,8 @@ const CreatePokemonForm = ({ hideForm }) => {
 	const updateType = e => setType(e.target.value);
 	const updateMove1 = e => setMove1(e.target.value);
 	const updateMove2 = e => setMove2(e.target.value);
+
+	const [errors, setErrors] = useState({});
 
 	useEffect(() => {
 		dispatch(getPokemonTypes());
@@ -46,14 +49,23 @@ const CreatePokemonForm = ({ hideForm }) => {
 			type,
 			move1,
 			move2,
-			moves: [move1, move2]
+			moves: [move1, move2],
+			captured: true
 		};
 
 		const res = await dispatch(postNewPokemon(newPokemon));
-
-		if (res) {
+		if (res.id) {
 			history.push(`/pokemon/${res.id}`);
 			hideForm();
+			return;
+		} else {
+			setErrors(res.errors);
+			res.errors.number && setNumber("");
+			res.errors.attack && setAttack("");
+			res.errors.defense && setDefense("");
+			res.errors.name && setName("");
+			res.errors.imageUrl && setImageUrl("");
+			return;
 		}
 	};
 
@@ -61,7 +73,6 @@ const CreatePokemonForm = ({ hideForm }) => {
 		e.preventDefault();
 		hideForm();
 	};
-
 	return (
 		<section className="new-form-holder centered middled">
 			<form className="create-pokemon-form" onSubmit={handleSubmit}>
@@ -69,40 +80,50 @@ const CreatePokemonForm = ({ hideForm }) => {
 					type="number"
 					placeholder="Number"
 					min="1"
-					required
 					value={number}
 					onChange={updateNumber}
 				/>
+				{errors.number && (
+					<ErrorMessage label="Number" message={errors.number} />
+				)}
 				<input
 					type="number"
 					placeholder="Attack"
 					min="0"
 					max="100"
-					required
 					value={attack}
 					onChange={updateAttack}
 				/>
+				{errors.attack && (
+					<ErrorMessage label="Attack" message={errors.attack} />
+				)}
 				<input
 					type="number"
 					placeholder="Defense"
 					min="0"
 					max="100"
-					required
 					value={defense}
 					onChange={updateDefense}
 				/>
+				{errors.defense && (
+					<ErrorMessage label="Defense" message={errors.defense} />
+				)}
 				<input
 					type="text"
-					placeholder="Image URL"
+					placeholder={"Image URL"}
 					value={imageUrl}
 					onChange={updateImageUrl}
 				/>
+				{errors.imageUrl && (
+					<ErrorMessage label="Image URL" message={errors.imageUrl} />
+				)}
 				<input
 					type="text"
-					placeholder="Name"
+					placeholder={"Name"}
 					value={name}
 					onChange={updateName}
 				/>
+				{errors.name && <ErrorMessage label="Name" message={errors.name} />}
 				<input
 					type="text"
 					placeholder="Move 1"

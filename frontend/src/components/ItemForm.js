@@ -1,9 +1,13 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { editPokemonItem } from "../store/items";
+import { editPokemonItem, postPokemonItem } from "../store/items";
 
-const ItemForm = ({ itemId, hideForm }) => {
+const ItemForm = ({ itemId, hideForm, pokemonId }) => {
 	let item = useSelector(state => state.items[itemId]);
+	console.log(item);
+	if (!item) {
+		item = { name: "", happiness: "", price: "" };
+	}
 
 	const dispatch = useDispatch();
 
@@ -25,7 +29,9 @@ const ItemForm = ({ itemId, hideForm }) => {
 			price
 		};
 
-		let returnedItem = await dispatch(editPokemonItem(payload));
+		let returnedItem = itemId
+			? dispatch(editPokemonItem(payload))
+			: dispatch(postPokemonItem(payload, pokemonId));
 		if (returnedItem) {
 			hideForm();
 		}
@@ -43,6 +49,7 @@ const ItemForm = ({ itemId, hideForm }) => {
 					type="text"
 					placeholder="Name"
 					value={name}
+					required
 					onChange={updateName}
 				/>
 				<input
@@ -61,7 +68,9 @@ const ItemForm = ({ itemId, hideForm }) => {
 					value={price}
 					onChange={updatePrice}
 				/>
-				<button type="submit">Update Item</button>
+				<button type="submit">
+					{itemId ? "Update Item" : "Create New Item"}
+				</button>
 				<button type="button" onClick={handleCancelClick}>
 					Cancel
 				</button>

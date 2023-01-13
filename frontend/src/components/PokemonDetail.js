@@ -13,10 +13,12 @@ const PokemonDetail = () => {
 	const pokemon = useSelector(state => state.pokemon[pokemonId]);
 	const [showEditPokeForm, setShowEditPokeForm] = useState(false);
 	const [editItemId, setEditItemId] = useState(null);
+	const [showAddItemForm, setShowAddItemForm] = useState(false);
 
 	useEffect(() => {
 		setShowEditPokeForm(false);
 		setEditItemId(null);
+		setShowAddItemForm(false);
 		dispatch(getPokemonDetails(pokemonId));
 	}, [pokemonId, dispatch]);
 
@@ -25,10 +27,21 @@ const PokemonDetail = () => {
 	}
 
 	let content = null;
-
-	if (editItemId) {
+	if (showAddItemForm && pokemon.captured) {
 		content = (
-			<ItemForm itemId={editItemId} hideForm={() => setEditItemId(null)} />
+			<ItemForm
+				itemId={null}
+				hideForm={() => setShowAddItemForm(false)}
+				pokemonId={pokemonId}
+			/>
+		);
+	} else if (editItemId) {
+		content = (
+			<ItemForm
+				itemId={editItemId}
+				hideForm={() => setEditItemId(null)}
+				pokemonId={pokemonId}
+			/>
 		);
 	} else if (showEditPokeForm && pokemon.captured) {
 		content = (
@@ -69,7 +82,9 @@ const PokemonDetail = () => {
 				<div>
 					<h2>
 						Items
-						<button> + </button>
+						{pokemon.captured && (
+							<button onClick={() => setShowAddItemForm(true)}> + </button>
+						)}
 					</h2>
 					<table>
 						<thead>

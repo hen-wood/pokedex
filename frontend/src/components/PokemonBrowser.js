@@ -53,7 +53,10 @@ const PokemonBrowser = () => {
 				})}
 			</nav>
 			{showForm ? (
-				<CreatePokemonForm hideForm={() => setShowForm(false)} />
+				<CreatePokemonForm
+					hideForm={() => setShowForm(false)}
+					pokemon={pokemon}
+				/>
 			) : (
 				<Route path="/pokemon/:pokemonId">
 					<PokemonDetail />
